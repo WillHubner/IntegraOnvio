@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2020/09/03 15:45:14.994,=rtl.dcp</Transaction>
+    <Transaction>2020/09/03 15:45:19.482,C:\Users\Willian Hubner\Documents\Embarcadero\Studio\Projects\IntegraOnvio.dproj=C:\Users\Willian Hubner\Documents\Embarcadero\Studio\Projects\Package1.dproj</Transaction>
+    <Transaction>2020/09/03 15:45:31.959,=C:\BrProjetos\IntegraOnvio\trunk\src\Integra.Onvio.pas</Transaction>
+    <Transaction>2020/09/03 15:45:43.208,C:\BrProjetos\IntegraOnvio\trunk\IntegraOnvio.dproj=C:\Users\Willian Hubner\Documents\Embarcadero\Studio\Projects\IntegraOnvio.dproj</Transaction>
+    <Transaction>2020/09/03 15:46:22.068,=vcl.dcp</Transaction>
+    <Transaction>2020/09/03 15:46:22.077,=vclie.dcp</Transaction>
+    <Transaction>2020/09/03 15:46:22.086,=IndySystem.dcp</Transaction>
+    <Transaction>2020/09/03 15:46:22.097,=IndyProtocols.dcp</Transaction>
+    <Transaction>2020/09/03 15:46:22.107,=IndyCore.dcp</Transaction>
+    <Transaction>2020/09/03 15:46:22.117,=VCLRESTComponents.dcp</Transaction>
+  </Transactions>
+</BorlandProject>
