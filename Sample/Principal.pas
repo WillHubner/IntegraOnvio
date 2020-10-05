@@ -52,13 +52,11 @@ implementation
 
 procedure TForm4.Button1Click(Sender: TObject);
 begin
-  Memo1.Text :=
-    FOnvio
-      .callbackURI(edCallbackURL.Text)
-      .ClientID(edUsername.Text)
-      .ClientSecret(edPassword.Text)
-      .GetAuth
-      .Format;
+  FOnvio
+    .callbackURI(edCallbackURL.Text)
+    .ClientID(edUsername.Text)
+    .ClientSecret(edPassword.Text)
+    .GetAuth;
 
   edToken.Text := FOnvio.Token;
   edRefreshToken.Text := FOnvio.RefreshToken;
