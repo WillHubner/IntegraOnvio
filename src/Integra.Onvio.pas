@@ -110,17 +110,23 @@ end;
 function TIntegraOnvio.GetAuth: TJSONObject;
 var
   vResult : String;
+  vToken, vRefreshToken, vGrant_type, vRedirect_uri, vCode, vRealm  : String;
 
   FReqAuthParams : TStringList;
 begin
+  vGrant_type := 'grant_type=authorization_code' ;
+  vRedirect_uri := Concat('redirect_uri=', FcallbackURI) ;
+  vCode := Concat('code=', Fcode) ;
+  vRealm := 'realm=/TR';
+
   FReqAuthParams := TStringList.Create;
 
   try
     FReqAuthParams.Clear;
-    FReqAuthParams.Add('grant_type=' + 'authorization_code');
-    FReqAuthParams.Add('redirect_uri=' + FcallbackURI);
-    FReqAuthParams.Add('code=' + Fcode);
-    FReqAuthParams.Add('realm=' + '/TR');
+    FReqAuthParams.Add(vGrant_type);
+    FReqAuthParams.Add(vRedirect_uri);
+    FReqAuthParams.Add(vCode);
+    FReqAuthParams.Add(vRealm);
 
     FHTTP.Request.Clear;
     FHTTP.Request.ContentType := 'application/x-www-form-urlencoded';
@@ -137,8 +143,11 @@ begin
     if Assigned(FonExecuteRequest) then
       FonExecuteRequest(rtGetToken, 'Token created', FHTTP.ResponseCode);
 
-    FToken := FResponse.GetValue('access_token').Value;
-    FRefreshToken := FResponse.GetValue('refresh_token').Value;
+    vToken := FResponse.GetValue('access_token').Value;
+    vRefreshToken := FResponse.GetValue('refresh_token').Value;
+
+    FToken := vToken;
+    FRefreshToken := vRefreshToken;
   finally
     FReqAuthParams.Free;
   end;
@@ -228,6 +237,7 @@ end;
 function TIntegraOnvio.SendFile(const aFileName : String; var FileID : String ) : Boolean;
 var
   aResult : String;
+  Bearer : String;
   FPostFileStream : TIdMultiPartFormDataStream;
   sshSocketHandler: TIdSSLIOHandlerSocketOpenSSL;
 const
@@ -249,8 +259,10 @@ begin
     FHTTP.Request.Accept := 'application/json';
     FHTTP.Request.ContentType := 'multipart/form-data';
 
+    Bearer := Concat('Bearer ', FToken);
+
     FHTTP.Request.CustomHeaders.Clear;
-    FHTTP.Request.CustomHeaders.Values['Authorization'] := 'Bearer ' + FToken;
+    FHTTP.Request.CustomHeaders.Values['Authorization'] := Bearer;
 
     sshSocketHandler := TIdSSLIOHandlerSocketOpenSSL.Create;
 
@@ -280,8 +292,8 @@ begin
               401 :
                 begin
                   FonExecuteRequest(rtSendFile, 'Invalid access token', FHTTP.ResponseCode);
-                  GetRefreshToken;
-                  SendFile(aFileName, FileID);
+//                  GetRefreshToken;
+//                  SendFile(aFileName, FileID);
                 end;
               404 : FonExecuteRequest(rtSendFile, 'Not found data', FHTTP.ResponseCode);
               500 : FonExecuteRequest(rtSendFile, 'Unexpected error on server', FHTTP.ResponseCode);
