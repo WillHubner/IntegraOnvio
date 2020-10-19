@@ -27,12 +27,13 @@ type
     FURL : String;
     FURL_AUTH : String;
     FAmbiente: TAmbiente;
-    procedure GetRefreshToken;
+
     procedure SetToken(const Value: String);
     procedure SetResponse(const Value: TJSONObject);
     procedure SetRefreshToken(const Value: String);
     procedure SetonExecuteRequest(const Value: TonExecuteRequest);
     procedure SetCode(const Value: String);
+    procedure GetRefreshToken;
   public
     constructor Create;
     destructor Destroy; override;
@@ -57,12 +58,15 @@ type
   End;
 
 const
-  URL_homolocacao = 'https://qed.onvio.com.br/api/br-invoice-integration/v1/batches';
-  URL_producao = 'https://api.onvio.com.br/dominio/invoice/v1/batches';
-  URL_Auth_homologacao = 'https://iamapi-ppe.thomsonreuters.com/v2.0/oauth2/token';
-  URL_Auth_producao = 'https://iamapi.thomsonreuters.com/v2.0/oauth2/token';
+  URL_homolocacao = 'https://api.onvio.com.br/dominio/invoice/v2/batches';
+  URL_producao = 'https://api.onvio.com.br/dominio/invoice/v2/batches';
+  URL_Auth_homologacao = 'https://auth.thomsonreuters.com/oauth/token';
+  URL_Auth_producao = 'https://auth.thomsonreuters.com/oauth/token';
 
 implementation
+
+uses
+  Vcl.Dialogs;
 
 { TIntegraOnvio }
 
@@ -113,11 +117,11 @@ var
   vToken, vRefreshToken, vGrant_type, vRedirect_uri, vCode, vRealm  : String;
 
   FReqAuthParams : TStringList;
+  sshSocketHandler: TIdSSLIOHandlerSocketOpenSSL;
 begin
   vGrant_type := 'grant_type=authorization_code' ;
   vRedirect_uri := Concat('redirect_uri=', FcallbackURI) ;
   vCode := Concat('code=', Fcode) ;
-  vRealm := 'realm=/TR';
 
   FReqAuthParams := TStringList.Create;
 
@@ -126,13 +130,18 @@ begin
     FReqAuthParams.Add(vGrant_type);
     FReqAuthParams.Add(vRedirect_uri);
     FReqAuthParams.Add(vCode);
-    FReqAuthParams.Add(vRealm);
+
 
     FHTTP.Request.Clear;
     FHTTP.Request.ContentType := 'application/x-www-form-urlencoded';
     FHTTP.Request.BasicAuthentication := True;
     FHTTP.Request.Username := FClientID;
     FHTTP.Request.Password := FClientSecret;
+
+    sshSocketHandler := TIdSSLIOHandlerSocketOpenSSL.Create;
+    sshSocketHandler.SSLOptions.Method := sslvSSLv23;
+    sshSocketHandler.SSLOptions.SSLVersions :=  [sslvSSLv23];
+    FHTTP.IOHandler := sshSocketHandler;
 
     vResult := FHTTP.Post(FURL_AUTH, FReqAuthParams);
 
@@ -155,16 +164,18 @@ end;
 
 procedure TIntegraOnvio.GetRefreshToken;
 var
-  vResult : String;
+  vResult,refre_,grand_ : String;
   FReqAuthParams : TStringList;
 begin
   FReqAuthParams := TStringList.Create;
+  FToken := '';
 
   try
+   refre_ := Concat('refresh_token=',FRefreshToken) ;
+
     FReqAuthParams.Clear;
-    FReqAuthParams.Add('grant_type=' + 'refresh_token');
-    FReqAuthParams.Add('refresh_token=' + FRefreshToken);
-    FReqAuthParams.Add('realm=' + '/TR');
+    FReqAuthParams.Add('grant_type=refresh_token');
+    FReqAuthParams.Add(refre_);
 
     FHTTP.Request.Clear;
     FHTTP.Request.ContentType := 'application/x-www-form-urlencoded';
@@ -194,8 +205,8 @@ begin
   wv.OnAfterRedirect := OnvioOnRedirectURI;
 
   case FAmbiente of
-    aProducao: wv.ShowModalWithURL('https://iamapi.thomsonreuters.com/v2.0/oauth2/authorize?client_id=brstOAuth2Agent&response_type=code&product_id=onviobr&redirect_uri=http://34.219.13.232:2284/auth');
-    aHomologacao: wv.ShowModalWithURL('https://iamapi-ppe.thomsonreuters.com/v2.0/oauth2/authorize?client_id=brstOAuth2Agent&response_type=code&product_id=onviobr&redirect_uri=http://34.219.13.232:2284/auth');
+    aProducao: wv.ShowModalWithURL('https://auth.thomsonreuters.com/authorize?client_id=WpzdY5wP8L23Ql3tz6gJ5fm9wcTKq0SX&response_type=code&audience=409f91f6-dc17-44c8-a5d8-e0a1bafd8b67&redirect_uri=http://34.219.13.232:2284/auth&scope=openid+profile+email+offline_access');
+    aHomologacao: wv.ShowModalWithURL('https://auth.thomsonreuters.com/authorize?client_id=WpzdY5wP8L23Ql3tz6gJ5fm9wcTKq0SX&response_type=code&audience=409f91f6-dc17-44c8-a5d8-e0a1bafd8b67&redirect_uri=http://34.219.13.232:2284/auth&scope=openid+profile+email+offline_access');
   end;
 
   wv.Release;
@@ -263,12 +274,15 @@ begin
 
     FHTTP.Request.CustomHeaders.Clear;
     FHTTP.Request.CustomHeaders.Values['Authorization'] := Bearer;
-
     sshSocketHandler := TIdSSLIOHandlerSocketOpenSSL.Create;
+    sshSocketHandler.SSLOptions.Method := sslvTLSv1_2;
+    sshSocketHandler.SSLOptions.SSLVersions := [sslvTLSv1_2];
+    FHTTP.IOHandler := sshSocketHandler;
 
+
+
+    Result := false;
     try
-      sshSocketHandler.SSLOptions.Method := sslvTLSv1_2;
-      FHTTP.IOHandler := sshSocketHandler;
 
       try
         aResult := FHTTP.Post(FURL, FPostFileStream);
@@ -292,8 +306,7 @@ begin
               401 :
                 begin
                   FonExecuteRequest(rtSendFile, 'Invalid access token', FHTTP.ResponseCode);
-//                  GetRefreshToken;
-//                  SendFile(aFileName, FileID);
+                  Result := false;
                 end;
               404 : FonExecuteRequest(rtSendFile, 'Not found data', FHTTP.ResponseCode);
               500 : FonExecuteRequest(rtSendFile, 'Unexpected error on server', FHTTP.ResponseCode);
@@ -310,10 +323,22 @@ begin
       end;
 
     finally
+      if result = false then
+        begin
+          GetRefreshToken;
+
+          SendFile(aFileName, FileID);
+        end;
       sshSocketHandler.Free;
     end;
 
   finally
+    if result = false then
+    begin
+      GetRefreshToken;
+
+      SendFile(aFileName, FileID);
+    end;
     FPostFileStream.Free;
   end;
 end;
