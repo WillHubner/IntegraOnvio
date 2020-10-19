@@ -113,6 +113,7 @@ object Form4: TForm4
     Height = 21
     Anchors = [akTop, akRight]
     TabOrder = 2
+    Text = 'JXIsFbxsPEG58aXh'
   end
   object edToken: TEdit
     Left = 771
@@ -154,6 +155,7 @@ object Form4: TForm4
     Height = 21
     Anchors = [akTop, akRight]
     TabOrder = 7
+    Text = 'http://34.219.13.232:2284/auth'
   end
   object edUsername: TEdit
     Left = 83
@@ -162,6 +164,7 @@ object Form4: TForm4
     Height = 21
     Anchors = [akTop, akRight]
     TabOrder = 8
+    Text = 'WpzdY5wP8L23Ql3tz6gJ5fm9wcTKq0SX'
   end
   object edPassword: TEdit
     Left = 83
@@ -170,6 +173,7 @@ object Form4: TForm4
     Height = 21
     Anchors = [akTop, akRight]
     TabOrder = 9
+    Text = 'WdlLLIVjG4GylAamM3SGnvyzUX2N6fk8fosFAPGPhMkipsy_YOhtim_VMFvmG99d'
   end
   object cbAmbiente: TComboBox
     Left = 83
@@ -194,5 +198,22 @@ object Form4: TForm4
   object OpenDialog1: TOpenDialog
     Left = 392
     Top = 184
+  end
+  object IdHTTP1: TIdHTTP
+    AllowCookies = True
+    ProxyParams.BasicAuthentication = False
+    ProxyParams.ProxyPort = 0
+    Request.ContentLength = -1
+    Request.ContentRangeEnd = -1
+    Request.ContentRangeStart = -1
+    Request.ContentRangeInstanceLength = -1
+    Request.Accept = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    Request.BasicAuthentication = False
+    Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
+    Request.Ranges.Units = 'bytes'
+    Request.Ranges = <>
+    HTTPOptions = [hoForceEncodeParams]
+    Left = 784
+    Top = 264
   end
 end

@@ -4,7 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Integra.Onvio;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Integra.Onvio,
+  IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdHTTP;
 
 type
   TForm4 = class(TForm)
@@ -29,6 +30,7 @@ type
     cbAmbiente: TComboBox;
     Label8: TLabel;
     Button4: TButton;
+    IdHTTP1: TIdHTTP;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -56,6 +58,7 @@ begin
     .callbackURI(edCallbackURL.Text)
     .ClientID(edUsername.Text)
     .ClientSecret(edPassword.Text)
+    .SetCode(edCode.Text)
     .GetAuth;
 
   edToken.Text := FOnvio.Token;

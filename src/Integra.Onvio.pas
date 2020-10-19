@@ -32,7 +32,6 @@ type
     procedure SetResponse(const Value: TJSONObject);
     procedure SetRefreshToken(const Value: String);
     procedure SetonExecuteRequest(const Value: TonExecuteRequest);
-    procedure SetCode(const Value: String);
     procedure GetRefreshToken;
   public
     constructor Create;
@@ -45,6 +44,7 @@ type
     function ClientID(const Value: String) : TIntegraOnvio;
     function ClientSecret(const Value: String) : TIntegraOnvio;
     function Ambiente(const Value: TAmbiente) : TIntegraOnvio;
+    function SetCode(const Value: String) : TIntegraOnvio;
 
     function GetAuth : TJSONObject;
     function SendFile(const aFileName : String; var FileID : String ) : Boolean;
@@ -52,8 +52,8 @@ type
 
     property Token : String read FToken write SetToken;
     property RefreshToken : String read FRefreshToken write SetRefreshToken;
-    property Code : String read FCode write SetCode;
     property Response : TJSONObject read FResponse write SetResponse;
+    property Code : String read FCode;
     property onExecuteRequest : TonExecuteRequest read FonExecuteRequest write SetonExecuteRequest;
   End;
 
@@ -131,7 +131,6 @@ begin
     FReqAuthParams.Add(vRedirect_uri);
     FReqAuthParams.Add(vCode);
 
-
     FHTTP.Request.Clear;
     FHTTP.Request.ContentType := 'application/x-www-form-urlencoded';
     FHTTP.Request.BasicAuthentication := True;
@@ -139,8 +138,7 @@ begin
     FHTTP.Request.Password := FClientSecret;
 
     sshSocketHandler := TIdSSLIOHandlerSocketOpenSSL.Create;
-    sshSocketHandler.SSLOptions.Method := sslvSSLv23;
-    sshSocketHandler.SSLOptions.SSLVersions :=  [sslvSSLv23];
+    sshSocketHandler.SSLOptions.SSLVersions := [sslvSSLv23, sslvTLSv1_2];
     FHTTP.IOHandler := sshSocketHandler;
 
     vResult := FHTTP.Post(FURL_AUTH, FReqAuthParams);
@@ -343,8 +341,10 @@ begin
   end;
 end;
 
-procedure TIntegraOnvio.SetCode(const Value: String);
+function TIntegraOnvio.SetCode(const Value: String) : TIntegraOnvio;
 begin
+  Result := Self;
+
   FCode := Value;
 end;
 
