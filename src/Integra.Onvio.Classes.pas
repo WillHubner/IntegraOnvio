@@ -39,6 +39,8 @@ type
     function ClientID(const Value : String) : iOnvio;
     function ClientSecret(const Value : String) : iOnvio;
     function Code(const Value : String) : iOnvio;
+    function Token(const Value : String) : iOnvio;
+    function RefreshToken(const Value : String) : iOnvio;
     function GetKeys(var token, refresh : String) : iOnvio;
     function onExecuteRequest(const vEvent : TonExecuteRequest) : iOnvio;
 
@@ -273,6 +275,13 @@ begin
     end;
 end;
 
+function TOnvio.RefreshToken(const Value: String): iOnvio;
+begin
+  Result := Self;
+
+  FRefreshToken := Value;
+end;
+
 function TOnvio.Response(var vResponse : TJSONObject) : iOnvio;
 begin
   result := Self;
@@ -420,6 +429,13 @@ begin
 
   if Assigned(FonExecuteRequest) then
     FonExecuteRequest(rtReadStatusFile, aMessage, FHTTP.ResponseCode)
+end;
+
+function TOnvio.Token(const Value: String): iOnvio;
+begin
+  Result := Self;
+
+  FToken := Value;
 end;
 
 end.

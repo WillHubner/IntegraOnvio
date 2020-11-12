@@ -12,6 +12,8 @@ type
     function ClientID(const Value : String) : iOnvio;
     function ClientSecret(const Value : String) : iOnvio;
     function Code(const Value : String) : iOnvio;
+    function Token(const Value : String) : iOnvio;
+    function RefreshToken(const Value : String) : iOnvio;
     function onExecuteRequest(const vEvent : TonExecuteRequest) : iOnvio;
 
     function Response(var vResponse : TJSONObject) : iOnvio;
