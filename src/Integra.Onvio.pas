@@ -16,6 +16,7 @@ type
     FClientSecret: String;
     FToken: String;
     FAmbiente: TAmbiente;
+    FResponse: TJSONObject;
     procedure SetonExecuteRequest(const Value: TonExecuteRequest);
     procedure SetAmbiente(const Value: TAmbiente);
     procedure SetCallbackURI(const Value: String);
@@ -32,6 +33,7 @@ type
     property RefreshToken : String read FRefreshToken write SetRefreshToken;
     property Ambiente: TAmbiente read FAmbiente write SetAmbiente;
     property Token : String read FToken write SetToken;
+    property Response : TJSONObject read FResponse;
 
     procedure Login;
 
@@ -51,17 +53,18 @@ uses
 
 function TIntegraOnvio.GetAuth: TJSONObject;
 begin
-  Result :=
-    TOnvio
-      .New
-        .onExecuteRequest(onExecuteRequest)
-        .callbackURI(FCallbackURI)
-        .ClientID(FClientID)
-        .ClientSecret(FClientSecret)
-        .Code(FCode)
-        .GetAuth
-        .GetKeys(FToken, FRefreshToken)
-        .Response;
+  TOnvio
+    .New
+      .onExecuteRequest(onExecuteRequest)
+      .callbackURI(FCallbackURI)
+      .ClientID(FClientID)
+      .ClientSecret(FClientSecret)
+      .Code(FCode)
+      .GetAuth
+      .GetKeys(FToken, FRefreshToken)
+      .Response(FResponse);
+
+  Result := FResponse;
 end;
 
 procedure TIntegraOnvio.Login;
@@ -80,6 +83,7 @@ begin
         .Ambiente(FAmbiente)
         .SendFile(aFileName, FileID)
         .GetKeys(FToken, FRefreshToken)
+        .Response(FResponse)
         .Status;
 end;
 
@@ -132,6 +136,7 @@ begin
         .onExecuteRequest(onExecuteRequest)
         .StatusFile(aFileID, aMessage)
         .GetKeys(FToken, FRefreshToken)
+        .Response(FResponse)
         .Status;
 end;
 

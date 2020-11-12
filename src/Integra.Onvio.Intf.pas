@@ -14,7 +14,7 @@ type
     function Code(const Value : String) : iOnvio;
     function onExecuteRequest(const vEvent : TonExecuteRequest) : iOnvio;
 
-    function Response : TJSONObject;
+    function Response(var vResponse : TJSONObject) : iOnvio;
 
     function SendFile(const FileName : String; var msg : String) : iOnvio;
     function StatusFile(const vID : String; var CallBackStr : String) : iOnvio;

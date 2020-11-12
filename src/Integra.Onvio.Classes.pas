@@ -32,7 +32,7 @@ type
     procedure GetRefreshToken;
     procedure OnvioOnRedirectURI(const AURL: string; var DoCloseWebView: boolean);
 
-    function Response : TJSONObject;
+    function Response(var vResponse : TJSONObject) : iOnvio;
 
     function Ambiente(const Value: TAmbiente) : iOnvio;
     function CallbackURI(const Value : String) : iOnvio;
@@ -273,9 +273,11 @@ begin
     end;
 end;
 
-function TOnvio.Response: TJSONObject;
+function TOnvio.Response(var vResponse : TJSONObject) : iOnvio;
 begin
-  Result := FResponse;
+  result := Self;
+
+  vResponse := FResponse;
 end;
 
 function TOnvio.SendFile(const aFileName : String; var FileID : String) : iOnvio;
