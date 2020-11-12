@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Integra.Onvio,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Integra.Onvio, Integra.Onvio.Types,
   IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdHTTP;
 
 type
@@ -54,12 +54,12 @@ implementation
 
 procedure TForm4.Button1Click(Sender: TObject);
 begin
-  FOnvio
-    .callbackURI(edCallbackURL.Text)
-    .ClientID(edUsername.Text)
-    .ClientSecret(edPassword.Text)
-    .SetCode(edCode.Text)
-    .GetAuth;
+  FOnvio.callbackURI := edCallbackURL.Text;
+  FOnvio.ClientID := edUsername.Text;
+  FOnvio.ClientSecret := edPassword.Text;
+  FOnvio.Code := edCode.Text;
+
+  FOnvio.GetAuth;
 
   edToken.Text := FOnvio.Token;
   edRefreshToken.Text := FOnvio.RefreshToken;
@@ -67,9 +67,10 @@ end;
 
 procedure TForm4.Button2Click(Sender: TObject);
 begin
-  FOnvio
-    .Ambiente(TAmbiente(cbAmbiente.ItemIndex))
-    .Login;
+  FOnvio.Ambiente := TAmbiente(cbAmbiente.ItemIndex);
+  FOnvio.ClientID := edUsername.Text;
+  FOnvio.CallbackURI := edCallbackURL.Text;
+  FOnvio.Login;
 
   edCode.Text := FOnvio.Code;
 end;
@@ -78,11 +79,11 @@ procedure TForm4.Button3Click(Sender: TObject);
 var
   Msg : String;
 begin
+  FOnvio.Token := edToken.Text;
+  FOnvio.RefreshToken := edRefreshToken.Text;
+
   if OpenDialog1.Execute then
     begin
-      FOnvio.Token := edToken.Text;
-      FOnvio.RefreshToken := edRefreshToken.Text;
-
       if FOnvio.SendFile(OpenDialog1.FileName, Msg) then
         Memo1.Lines.Add('Sucesso:' + Msg)
       else

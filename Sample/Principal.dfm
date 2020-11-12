@@ -113,7 +113,6 @@ object Form4: TForm4
     Height = 21
     Anchors = [akTop, akRight]
     TabOrder = 2
-    Text = 'JXIsFbxsPEG58aXh'
   end
   object edToken: TEdit
     Left = 771
@@ -155,7 +154,6 @@ object Form4: TForm4
     Height = 21
     Anchors = [akTop, akRight]
     TabOrder = 7
-    Text = 'http://34.219.13.232:2284/auth'
   end
   object edUsername: TEdit
     Left = 83
@@ -164,7 +162,6 @@ object Form4: TForm4
     Height = 21
     Anchors = [akTop, akRight]
     TabOrder = 8
-    Text = 'WpzdY5wP8L23Ql3tz6gJ5fm9wcTKq0SX'
   end
   object edPassword: TEdit
     Left = 83
@@ -173,7 +170,6 @@ object Form4: TForm4
     Height = 21
     Anchors = [akTop, akRight]
     TabOrder = 9
-    Text = 'WdlLLIVjG4GylAamM3SGnvyzUX2N6fk8fosFAPGPhMkipsy_YOhtim_VMFvmG99d'
   end
   object cbAmbiente: TComboBox
     Left = 83

@@ -103,6 +103,9 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\src\Integra.Onvio.pas"/>
+        <DCCReference Include="..\src\Integra.Onvio.Classes.pas"/>
+        <DCCReference Include="..\src\Integra.Onvio.Intf.pas"/>
+        <DCCReference Include="..\src\Integra.Onvio.Types.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
